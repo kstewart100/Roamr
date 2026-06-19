@@ -10,6 +10,8 @@
  *   • Hoka UTMB Kodiak 21k    — Big Bear Lake, CA                    (Oct 2025)
  *   • Sequoia National Park    — Tulare County                        (Nov 2025)
  *   • Yosemite National Park   — Winter visit                         (Jan 2026)
+ *   • Marble Mountains         — Memorial Day weekend wilderness      (May 2026)
+ *   • Yosemite National Park   — Snow Creek & Yosemite Falls          (Jun 2026)
  *
  * Stop ID range: 300–399
  * Activity ID prefix: 'na-'
@@ -91,6 +93,28 @@ export const northAmericaStops: JourneyStop[] = [
   journal: 'January means no crowds and possible snow — both delivered. Hiked the valley floor to Union Point, 6.8 miles with views that feel implausible. Came back after dark for a night hike just to see it differently. Next morning: snowshoes on and up into the trees above the valley. Winter Yosemite is a different park entirely.',
   countryId: 'us', level2Id: 'us-norcal', level3Id: 'yosemite',
   country: 'United States'
+},
+
+// ── MARBLE MOUNTAINS WILDERNESS ───────────────────────────────────────────
+{
+  id: 307,
+  name: 'Marble Mountains Wilderness',
+  date: 'May 23–25, 2026',
+  coords: [41.5515, -123.1762],
+  journal: 'Memorial Day weekend in the Klamath — three days in the Marble Mountains Wilderness near the Trinity Alps. Alpine meadows thick with wildflowers, cracked ghost trees on the ridgelines, lakes still holding snow caps into late May. Day 3 was the light exit hike: birds, flowers, and the kind of quiet that makes you forget cell service exists.',
+  countryId: 'us', level2Id: 'us-norcal', level3Id: 'marble-mountains',
+  country: 'United States'
+},
+
+// ── YOSEMITE — SNOW CREEK ─────────────────────────────────────────────────
+{
+  id: 308,
+  name: 'Yosemite National Park — Snow Creek',
+  date: 'Jun 13–15, 2026',
+  coords: [37.7735, -119.5391],
+  journal: 'Back to Yosemite in June for a different kind of trip — no snow, full sun, and the Snow Creek trail from the valley floor all the way up toward Yosemite Falls. Three days of climbing: easing in with six miles, then the Snow Creek approach in the heat, then the big one — 15+ miles linking Snow Creek, the falls, and every side quest the map suggested. Completely different park than January.',
+  countryId: 'us', level2Id: 'us-norcal', level3Id: 'yosemite',
+  country: 'United States'
 }];
 
 
@@ -107,6 +131,7 @@ export const northAmericaActivities: Activity[] = [
 { id: 'na-c4', type: 'cycling', date: 'Nov 22, 2025', name: 'Rapha × Boot Coffee Ride', distance: 59.5, time: '4:10:33', location: 'San Francisco', coords: [37.7749, -122.4194], highlight: true, desc: '60 miles — Marin, the bridge, the city, and enough coffee to fuel another 60', stopId: 300 },
 { id: 'na-r6', type: 'running', date: 'Mar 22, 2026', name: 'Modified cross-town trail', distance: 14.2, time: '3:10:32', location: 'San Francisco', coords: [37.7596, -122.4269], highlight: true, desc: 'San Francisco end-to-end: Embarcadero through the park and out to the ocean', stopId: 300 },
 { id: 'na-r7', type: 'running', date: 'Mar 29, 2026', name: 'A run to Hookfish 🎣', distance: 14.8, time: '3:29:14', location: 'San Francisco', coords: [37.7749, -122.4194], highlight: true, desc: 'Ran across the city to Hookfish for lunch, then ran back. Best excuse for a long run.', stopId: 300 },
+{ id: 'na-h14', type: 'hiking', date: 'Jun 7, 2026', name: 'Wee little hike', distance: 5.2, time: '1:39:50', location: 'Marin County', coords: [37.8603, -122.5364], highlight: false, stopId: 300 },
 
 // ── CRATER LAKE ───────────────────────────────────────────────────────────
 { id: 'na-h1', type: 'hiking', date: 'Aug 13, 2025', name: 'Back to our regular scheduled program', distance: 2.1, time: '0:52:00', location: 'Crater Lake, OR', coords: [42.9446, -122.1090], highlight: false, stopId: 301 },
@@ -134,4 +159,14 @@ export const northAmericaActivities: Activity[] = [
 // ── YOSEMITE ──────────────────────────────────────────────────────────────
 { id: 'na-h11', type: 'hiking', date: 'Jan 31, 2026', name: 'The valley floor to Union Point', distance: 6.8, time: '3:25:00', location: 'Yosemite National Park', coords: [37.7456, -119.5588], highlight: true, desc: 'Valley floor to Union Point — winter views with no crowds and a dusting of snow', stopId: 306 },
 { id: 'na-h12', type: 'hiking', date: 'Jan 31, 2026', name: 'Night hike', distance: 3.3, time: '1:35:00', location: 'Yosemite National Park', coords: [37.7451, -119.5936], highlight: false, stopId: 306 },
-{ id: 'na-h13', type: 'hiking', date: 'Feb 1, 2026', name: 'Snowshoeing and shenanigans ❄️', distance: 2.8, time: '1:22:00', location: 'Yosemite National Park', coords: [37.7456, -119.6100], highlight: false, stopId: 306 }];
+{ id: 'na-h13', type: 'hiking', date: 'Feb 1, 2026', name: 'Snowshoeing and shenanigans ❄️', distance: 2.8, time: '1:22:00', location: 'Yosemite National Park', coords: [37.7456, -119.6100], highlight: false, stopId: 306 },
+
+// ── MARBLE MOUNTAINS ──────────────────────────────────────────────────────
+{ id: 'na-h15', type: 'hiking', date: 'May 23, 2026', name: 'Day #1 // alpine medows, wildflowers, and streams', distance: 11.9, time: '5:27:38', location: 'Marble Mountains Wilderness', coords: [41.5942, -123.1437], highlight: false, stopId: 307 },
+{ id: 'na-h16', type: 'hiking', date: 'May 24, 2026', name: 'Day #2 // vistas, alpine lakes, and snow caps', distance: 10.4, time: '4:31:43', location: 'Marble Mountains Wilderness', coords: [41.5240, -123.1160], highlight: true, desc: 'Ridgeline views, alpine lakes still rimmed with snow — the kind of day that sells you on three-day backpacking', stopId: 307 },
+{ id: 'na-h17', type: 'hiking', date: 'May 25, 2026', name: 'Day #3 // cracked trees, wild flowers, and birdies', distance: 6.2, time: '2:25:14', location: 'Marble Mountains Wilderness', coords: [41.5515, -123.1762], highlight: false, stopId: 307 },
+
+// ── YOSEMITE — SNOW CREEK ───────────────────────────────────────────────────
+{ id: 'na-h18', type: 'hiking', date: 'Jun 13, 2026', name: '6 miles of hiking', distance: 6.0, time: '2:22:42', location: 'Yosemite National Park', coords: [37.7109, -119.5884], highlight: false, stopId: 308 },
+{ id: 'na-h19', type: 'hiking', date: 'Jun 14, 2026', name: 'Snow creek isn\'t snowy in the sun🥵', distance: 8.4, time: '4:09:47', location: 'Yosemite National Park', coords: [37.7395, -119.5704], highlight: false, stopId: 308 },
+{ id: 'na-h20', type: 'hiking', date: 'Jun 15, 2026', name: 'Snow Creek to Yosemite Falls + all the side quests', distance: 15.6, time: '7:36:54', location: 'Yosemite National Park', coords: [37.7735, -119.5391], highlight: true, desc: '15+ miles from Snow Creek up to Yosemite Falls and every detour worth taking — sun, elevation, and a completely different valley than winter', stopId: 308 }];

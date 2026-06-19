@@ -128,6 +128,10 @@ function setupMapLayers(map: mapboxgl.Map): void {
     id: 'traces-bg-line',
     type: 'line',
     source: 'traces-bg',
+    layout: {
+      'line-join': 'round',
+      'line-cap': 'round',
+    },
     paint: {
       'line-color': [
         'match',
@@ -140,10 +144,10 @@ function setupMapLayers(map: mapboxgl.Map): void {
         'match',
         ['get', 'trip'],
         'north-america',
-        0.25,
-        0.2,
+        0.45,
+        0.35,
       ],
-      'line-width': 1.2,
+      'line-width': ['interpolate', ['linear'], ['zoom'], 8, 1.5, 12, 3, 16, 5],
     },
   });
 
@@ -155,10 +159,14 @@ function setupMapLayers(map: mapboxgl.Map): void {
     id: 'traces-selected-outline',
     type: 'line',
     source: 'traces-selected-outline',
+    layout: {
+      'line-join': 'round',
+      'line-cap': 'round',
+    },
     paint: {
       'line-color': '#FFFFFF',
-      'line-width': 6,
-      'line-opacity': 0.8,
+      'line-width': ['interpolate', ['linear'], ['zoom'], 10, 5, 14, 8, 16, 10],
+      'line-opacity': 0.9,
     },
   });
 
@@ -170,10 +178,14 @@ function setupMapLayers(map: mapboxgl.Map): void {
     id: 'traces-selected-core',
     type: 'line',
     source: 'traces-selected-core',
+    layout: {
+      'line-join': 'round',
+      'line-cap': 'round',
+    },
     paint: {
-      'line-color': '#1A3044',
-      'line-width': 3,
-      'line-opacity': 0.9,
+      'line-color': ['coalesce', ['get', 'color'], '#1A3044'],
+      'line-width': ['interpolate', ['linear'], ['zoom'], 10, 3, 14, 5, 16, 6],
+      'line-opacity': 1,
     },
   });
 
@@ -207,7 +219,7 @@ export function WorldMap({
   const markersRef = useRef<mapboxgl.Marker[]>([]);
   const bucketMarkersRef = useRef<mapboxgl.Marker[]>([]);
   const milfordMarkersRef = useRef<mapboxgl.Marker[]>([]);
-  const layersReadyRef = useRef(false);
+  const [layersReady, setLayersReady] = useState(false);
 
   const [traceData, setTraceData] = useState<{
     allTraces: ActivityTrace[];
@@ -277,6 +289,19 @@ export function WorldMap({
     }
     return filtered;
   }, [showAllActivities, activeTypeFilter]);
+
+  /** App IDs whose GPS traces should render on the map */
+  const displayTraceAppIds = useMemo(() => {
+    const ids = new Set<string>();
+    visibleActivities.forEach((a) => ids.add(a.id));
+    if (selectedActivityId) ids.add(selectedActivityId);
+    if (selectedStopId != null) {
+      activities
+        .filter((a) => a.stopId === selectedStopId)
+        .forEach((a) => ids.add(a.id));
+    }
+    return ids;
+  }, [visibleActivities, selectedActivityId, selectedStopId]);
 
   const clearMarkers = useCallback((markers: mapboxgl.Marker[]) => {
     markers.forEach((m) => m.remove());
@@ -481,7 +506,7 @@ export function WorldMap({
       // Studio / v12 styles often default to globe — override after style loads
       map.setProjection('mercator');
       setupMapLayers(map);
-      layersReadyRef.current = true;
+      setLayersReady(true);
 
       const bounds = boundsFromCoords(allStops.map((s) => s.coords));
       if (bounds) {
@@ -501,7 +526,7 @@ export function WorldMap({
 
     return () => {
       cancelled = true;
-      layersReadyRef.current = false;
+      setLayersReady(false);
       clearMarkers(markersRef.current);
       clearMarkers(bucketMarkersRef.current);
       clearMarkers(milfordMarkersRef.current);
@@ -550,9 +575,14 @@ export function WorldMap({
   // ── Background GPS traces ───────────────────────────────────────────────────
   useEffect(() => {
     const map = mapInstanceRef.current;
-    if (!map || !mapReady || !traceData || !layersReadyRef.current) return;
+    if (!map || !mapReady || !layersReady || !traceData) return;
+
+    if (!map.getSource('traces-bg')) setupMapLayers(map);
 
     const features: GeoJSON.Feature[] = traceData.allTraces
+      .filter(
+        (trace) => !trace.appId || displayTraceAppIds.has(trace.appId)
+      )
       .map((trace) => {
         const line = lineToGeoJSON(trace.coords);
         if (line.coordinates.length < 2) return null;
@@ -565,15 +595,13 @@ export function WorldMap({
       .filter((f): f is GeoJSON.Feature => f !== null);
 
     const source = map.getSource('traces-bg') as mapboxgl.GeoJSONSource | undefined;
-    if (source) {
-      source.setData({ type: 'FeatureCollection', features });
-    }
-  }, [traceData, mapReady]);
+    source?.setData({ type: 'FeatureCollection', features });
+  }, [traceData, mapReady, layersReady, displayTraceAppIds]);
 
   // ── Selected GPS trace highlight ──────────────────────────────────────────────
   useEffect(() => {
     const map = mapInstanceRef.current;
-    if (!map || !mapReady || !layersReadyRef.current) return;
+    if (!map || !mapReady || !layersReady) return;
 
     const empty = emptyFeatureCollection();
     const outlineSource = map.getSource(
@@ -588,6 +616,8 @@ export function WorldMap({
       coreSource?.setData(empty);
       return;
     }
+
+    if (!map.getSource('traces-selected-outline')) setupMapLayers(map);
 
     const tracesToHighlight: ActivityTrace[] = [];
     if (selectedActivityId) {
@@ -610,9 +640,14 @@ export function WorldMap({
       .map((trace) => {
         const line = lineToGeoJSON(trace.coords);
         if (line.coordinates.length < 2) return null;
+        const activity = trace.appId
+          ? activities.find((a) => a.id === trace.appId)
+          : undefined;
         return {
           type: 'Feature' as const,
-          properties: {},
+          properties: {
+            color: activity ? TYPE_COLORS[activity.type] : '#1A3044',
+          },
           geometry: line,
         };
       })
@@ -621,7 +656,7 @@ export function WorldMap({
     const fc = { type: 'FeatureCollection' as const, features };
     outlineSource?.setData(fc);
     coreSource?.setData(fc);
-  }, [selectedActivityId, selectedStopId, traceData, mapReady]);
+  }, [selectedActivityId, selectedStopId, traceData, mapReady, layersReady]);
 
   // ── Bucket list markers ─────────────────────────────────────────────────────
   useEffect(() => {
@@ -666,7 +701,7 @@ export function WorldMap({
   // ── Milford Track ───────────────────────────────────────────────────────────
   useEffect(() => {
     const map = mapInstanceRef.current;
-    if (!map || !mapReady || !layersReadyRef.current) return;
+    if (!map || !mapReady || !layersReady) return;
 
     clearMarkers(milfordMarkersRef.current);
 
@@ -760,7 +795,7 @@ export function WorldMap({
       clearMarkers(milfordMarkersRef.current);
       segmentSource?.setData(emptyFeatureCollection());
     };
-  }, [selectedStopId, selectedActivityId, mapReady, clearMarkers]);
+  }, [selectedStopId, selectedActivityId, mapReady, layersReady, clearMarkers]);
 
   // ── Fly-to / fit-bounds on selection ────────────────────────────────────────
   useEffect(() => {

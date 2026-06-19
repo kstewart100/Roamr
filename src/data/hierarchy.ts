@@ -41,6 +41,7 @@ export const LEVEL3_REGIONS: Level3Region[] = [
 { id: 'yosemite', name: 'Yosemite National Park', level2Id: 'us-norcal', countryId: 'us' },
 { id: 'sierra-nevada', name: 'Sierra Nevada', level2Id: 'us-norcal', countryId: 'us' },
 { id: 'sequoia-kings', name: 'Sequoia & Kings Canyon', level2Id: 'us-norcal', countryId: 'us' },
+{ id: 'marble-mountains', name: 'Marble Mountains Wilderness', level2Id: 'us-norcal', countryId: 'us' },
 
 // US — Southern California
 { id: 'big-bear', name: 'Big Bear & San Bernardino', level2Id: 'us-socal', countryId: 'us' },

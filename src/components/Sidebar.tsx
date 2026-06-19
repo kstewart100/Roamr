@@ -226,7 +226,7 @@ export function Sidebar({
           <div className="flex items-center gap-2 mb-0.5">
             <GlobeIcon className="w-5 h-5 text-[var(--color-interactive-accent)]" />
             <h1 className="text-xl font-bold text-[var(--color-text-primary)] tracking-tight">
-              Overview
+              Roamr
             </h1>
           </div>
         </div>);
